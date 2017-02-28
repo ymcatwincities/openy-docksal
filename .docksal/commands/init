@@ -87,7 +87,7 @@ init_settings ()
 {
 	# Copy from settings templates
 	# copy_settings_file "${PROJECT_ROOT}/default.settings.local.php" "${SITEDIR_PATH}/settings.local.php"
-        echo 'hello'
+        echo 'Copied files'
 }
 
 # Set file/folder permissions
@@ -103,7 +103,7 @@ site_install ()
     chmod -R a+w "$DOCROOT_PATH/sites/default"
 
     echo-green "Install site from the profile"
-    fin drush si -y openy --account-pass=admin --db-url="mysql://drupal:drupal@db:3306/drupal"  --root="$SERVER_DOCROOT_PATH" --notify
+    fin drush si -y openy --account-pass=admin --db-url="mysql://drupal:drupal@db:3306/drupal"  --root="$SERVER_DOCROOT_PATH"
 #
 #    echo-green "Add 'administrator' role to user 1"
 #    fin drush user-add-role "administrator" 1 --root="$SERVER_DOCROOT_PATH"
