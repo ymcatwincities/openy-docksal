@@ -1,0 +1,82 @@
+# Docker and Docker Compose based environment for Symfony.
+# See https://github.com/docksal/docksal for more information and documentation.
+
+# This is a shared configuration file that is intended to be stored in the project repo.
+# For local overrides:
+# - create .docksal/docksal-local.yml file and put local docker-compose configuration overrides there
+# - add .docksal/docksal-local.yml to .gitignore
+
+# Docksal stiches several docker-compose configuration files together.
+# Run "fin config" to see which files are involved and the resulting configration.
+
+version: "2.1"
+
+services:
+  # Web node
+  web:
+    hostname: web
+    image: docksal/web:1.0-apache2.2
+    volumes:
+      # Project root volume
+      - project_root:/var/www:ro
+    labels:
+      - io.docksal.virtual-host=${VIRTUAL_HOST}
+      - io.docksal.project-root=${PROJECT_ROOT}
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - APACHE_DOCUMENTROOT=/var/www/${DOCROOT}
+    depends_on:
+      - cli
+
+  # DB node
+  db:
+    hostname: db
+    image: docksal/db:1.0-mysql-5.5
+    ports:
+      - ${MYSQL_PORT}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+  # CLI node
+  # Used for all console commands and tools.
+  cli:
+    hostname: cli
+    image: docksal/cli:latest
+    volumes:
+      # Project root volume
+      - project_root:/var/www:rw
+      # Host home volume (for SSH keys and other credentials).
+      - host_home:/.home:ro
+      # Shared ssh-agent socket
+      - docksal_ssh_agent:/.ssh-agent:ro
+      # Host home directory mapping (for SSH keys and ther credentials).
+      # We try to map both options (b2d and Linux). The startup.sh script in cli container will decide which one to use.
+      - /.home:/.home-b2d  # boot2docker
+      - ~/:/.home-linux   # Linux
+      - ${PROJECT_ROOT}/.docksal/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini
+      - ${PROJECT_ROOT}/.docksal/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini
+      - ${PROJECT_ROOT}/.docksal/files/mhsendmail_linux_386:/usr/local/bin/mhsendmail
+#      - ${PROJECT_ROOT}/.docksal/files/tidy-5.2.0-64bit.deb:/usr/local/src/tidy-5.2.0-64bit.deb
+#      - ${PROJECT_ROOT}/.docksal/files/php5-tidy_5.6.26+dfsg-1_amd64.deb:/usr/local/src/php5-tidy_5.6.26+dfsg-1_amd64.deb
+#      - ${PROJECT_ROOT}/.docksal/files/libtidy5_5.2.0-2_amd64.deb:/usr/local/src/libtidy5_5.2.0-2_amd64.deb
+
+  mail:
+    hostname: mail
+    image: mailhog/mailhog
+    expose:
+      - "80"
+    environment:
+      - MH_API_BIND_ADDR=0.0.0.0:80
+      - MH_UI_BIND_ADDR=0.0.0.0:80
+      - DOMAIN_NAME=mail.openy.docksal
+      - VIRTUAL_HOST=webmail.openy.docksal
+
+  # selenium2 node
+  browser:
+    hostname: browser
+    image: selenium/standalone-chrome
+    ports:
+      - "4444"
