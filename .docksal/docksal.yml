@@ -49,15 +49,15 @@ services:
       # Project root volume
       - project_root:/var/www:rw
       # Host home volume (for SSH keys and other credentials).
-      - host_home:/.home:ro
+#      - host_home:/.home:ro
       # Shared ssh-agent socket
       - docksal_ssh_agent:/.ssh-agent:ro
       # Host home directory mapping (for SSH keys and ther credentials).
       # We try to map both options (b2d and Linux). The startup.sh script in cli container will decide which one to use.
       - /.home:/.home-b2d  # boot2docker
       - ~/:/.home-linux   # Linux
-      - ${PROJECT_ROOT}/.docksal/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini
-      - ${PROJECT_ROOT}/.docksal/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini
+      - ${PROJECT_ROOT}/.docksal/etc/php5/php.ini:/etc/php/7.0/fpm/conf.d/z_php.ini
+      - ${PROJECT_ROOT}/.docksal/etc/php5/php-cli.ini:/etc/php/7.0/cli/conf.d/z_php.ini
       - ${PROJECT_ROOT}/.docksal/files/mhsendmail_linux_386:/usr/local/bin/mhsendmail
 #      - ${PROJECT_ROOT}/.docksal/files/tidy-5.2.0-64bit.deb:/usr/local/src/tidy-5.2.0-64bit.deb
 #      - ${PROJECT_ROOT}/.docksal/files/php5-tidy_5.6.26+dfsg-1_amd64.deb:/usr/local/src/php5-tidy_5.6.26+dfsg-1_amd64.deb
