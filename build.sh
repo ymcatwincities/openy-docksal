@@ -4,7 +4,7 @@
 
 # Build the sourcecode.
 echo 'Building OpenY source code'
-composer create-project ymcatwincities/openy-project:8.1.x-dev openy --prefer-source --no-interaction --dev
+composer create-project ymcatwincities/openy-project:8.1.x-dev openy --prefer-source --no-interaction
 
 # Copy over docksal files.
 echo 'Copy over docksal configuration'
