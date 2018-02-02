@@ -8,13 +8,11 @@ You need to install Docksal on your local machine according to [Docksal setup](h
 
 # Docksal environment for OpenY
 
-Open **openy** folder and run 
+Open the project's folder and run 
 ```
 fin init
 ```
 to start the project.
-
-If you run multiple OpenY installations, you need to change **VIRTUAL_HOST** variable in the _.docksal/docksal.env_ file.
 
 The webserver starts up, and the site will be installed automatically.
 
