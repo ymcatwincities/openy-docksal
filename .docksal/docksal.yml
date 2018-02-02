@@ -12,71 +12,54 @@
 version: "2.1"
 
 services:
-  # Web node
+  # Web
   web:
     hostname: web
-    image: docksal/web:1.0-apache2.2
+    image: ${WEB_IMAGE:-docksal/web:latest}
     volumes:
-      # Project root volume
-      - project_root:/var/www:ro
+      - project_root:/var/www:ro,nocopy  # Project root volume
     labels:
-      - io.docksal.virtual-host=${VIRTUAL_HOST}
+      - io.docksal.virtual-host=${VIRTUAL_HOST},*.${VIRTUAL_HOST}
       - io.docksal.project-root=${PROJECT_ROOT}
     environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
-      - APACHE_DOCUMENTROOT=/var/www/${DOCROOT}
-    depends_on:
-      - cli
+      - APACHE_DOCUMENTROOT=/var/www/${DOCROOT:-docroot}
+      - APACHE_BASIC_AUTH_USER
+      - APACHE_BASIC_AUTH_PASS
+    dns:
+      - ${DOCKSAL_DNS1}
+      - ${DOCKSAL_DNS2}
 
-  # DB node
+  # DB
   db:
     hostname: db
-    image: docksal/db:1.0-mysql-5.5
+    image: ${DB_IMAGE:-docksal/db:latest}
     ports:
-      - ${MYSQL_PORT}
+      - "${MYSQL_PORT_MAPPING:-3306}"
+    volumes:
+      - project_root:/var/www:ro,nocopy  # Project root volume
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+      - MYSQL_USER=${MYSQL_USER:-user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-user}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-default}
+    dns:
+      - ${DOCKSAL_DNS1}
+      - ${DOCKSAL_DNS2}
 
-  # CLI node
-  # Used for all console commands and tools.
+  # CLI - Used for all console commands and tools.
   cli:
     hostname: cli
-    image: docksal/cli:edge-php7.1
+    image: ${CLI_IMAGE:-docksal/cli:latest}
     volumes:
-      # Project root volume
-      - project_root:/var/www:rw
-      # Host home volume (for SSH keys and other credentials).
-#      - host_home:/.home:ro
-      # Shared ssh-agent socket
-      - docksal_ssh_agent:/.ssh-agent:ro
-      # Host home directory mapping (for SSH keys and ther credentials).
-      # We try to map both options (b2d and Linux). The startup.sh script in cli container will decide which one to use.
-      - /.home:/.home-b2d  # boot2docker
-      - ~/:/.home-linux   # Linux
-      - ${PROJECT_ROOT}/.docksal/etc/php5/php.ini:/etc/php/7.0/fpm/conf.d/z_php.ini
-      - ${PROJECT_ROOT}/.docksal/etc/php5/php-cli.ini:/etc/php/7.0/cli/conf.d/z_php.ini
-      - ${PROJECT_ROOT}/.docksal/files/mhsendmail_linux_386:/usr/local/bin/mhsendmail
-#      - ${PROJECT_ROOT}/.docksal/files/tidy-5.2.0-64bit.deb:/usr/local/src/tidy-5.2.0-64bit.deb
-#      - ${PROJECT_ROOT}/.docksal/files/php5-tidy_5.6.26+dfsg-1_amd64.deb:/usr/local/src/php5-tidy_5.6.26+dfsg-1_amd64.deb
-#      - ${PROJECT_ROOT}/.docksal/files/libtidy5_5.2.0-2_amd64.deb:/usr/local/src/libtidy5_5.2.0-2_amd64.deb
-
-  mail:
-    hostname: mail
-    image: mailhog/mailhog
-    expose:
-      - "80"
+      - project_root:/var/www:rw,nocopy  # Project root volume
+      - docksal_ssh_agent:/.ssh-agent:ro  # Shared ssh-agent socket
+      - /home/docker  # Write-heavy directories should be in volumes. See https://github.com/docksal/docksal/issues/325
     environment:
-      - MH_API_BIND_ADDR=0.0.0.0:80
-      - MH_UI_BIND_ADDR=0.0.0.0:80
-      - DOMAIN_NAME=mail.openy.docksal
-      - VIRTUAL_HOST=webmail.openy.docksal
-
-  # selenium2 node
-  browser:
-    hostname: browser
-    image: selenium/standalone-chrome
-    ports:
-      - "4444"
+      - HOST_UID
+      - HOST_GID
+      - DOCROOT
+      - XDEBUG_ENABLED=${XDEBUG_ENABLED:-0}
+      - XDEBUG_CONFIG=remote_connect_back=0 remote_host=${DOCKSAL_HOST_IP}  # Point xdebug to the host IP
+    dns:
+      - ${DOCKSAL_DNS1}
+      - ${DOCKSAL_DNS2}
