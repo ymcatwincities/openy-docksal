@@ -141,6 +141,7 @@ The XML sitemap has been regenerated for all languages.                         
 Congratulations, you installed OpenY!    
 ```
 
+By visiting http://openy.docksal/ you'll see your local copy of latest stable OpenY
 
 # Docksal environment for OpenY
 
