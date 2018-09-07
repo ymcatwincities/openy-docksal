@@ -142,7 +142,9 @@ Congratulations, you installed OpenY!
 ```
 
 By visiting http://openy.docksal/ you'll see your local copy of latest stable OpenY. If you have root folder different than `/openy`, by default the virtual host name is equal to the project's folder name sans spaces and dashes, with the .docksal domain appended to it.
+```
 openy-project => openyproject.docksal
+```
 
 # Docksal environment for OpenY
 
