@@ -8,25 +8,19 @@ You need to install Docksal on your local machine according to [Docksal setup](h
 
 ### Full install from scratch
 
-You should have php-cli (7.1) installed on your computer
+Note: a local instance of PHP and/or Composer is not required.
 
-```sh
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-sudo mv composer.phar /usr/local/bin/composer
+```bash
+# Install Docksal
+curl -fsSL https://get.docksal.io | bash
 # Change directory to your workspace
-composer create-project ymcatwincities/openy-project openy --no-interaction --no-dev
-cd openy/
-composer install
-# Install Doksal
-curl -fsSL https://get.docksal.io | sh
-fin init
-fin vm restart
+fin run-cli composer create-project ymcatwincities/openy-project openy --no-interaction --no-dev
+cd openy
+fin run-cli composer install
 fin init
 ```
 
 You should see something like
-
 
 ```
 MBP-Andrii:openy podarok$ fin init
@@ -139,19 +133,26 @@ You can now include content into the sitemap by visiting the corresponding entit
 for additional entity types and custom links can be added on the module's configuration pages.
 The XML sitemap has been regenerated for all languages.                                                                                [status]
 Congratulations, you installed OpenY!    
+Clear caches.
+Cache rebuild complete.                                                                                                                [ok]
+Created three GoogleTagManager snippet files based on configuration.                                                                   [status]
+
+real    22m8.914s
+user    0m1.720s
+sys     0m0.780s
+ DONE!  Open http://openy.docksal in your browser to verify the setup.
 ```
 
-By visiting http://openy.docksal/ you'll see your local copy of the latest stable OpenY. If you have root folder different than `/openy`, by default the virtual host name is equal to the project's folder name without spaces and dashes, with the .docksal domain appended to it.
-```
-openy-project => openyproject.docksal
-```
+Open the URL printed at the end of the setup (e.g. `http://openy.docksal`) to see your local copy of the latest stable OpenY.
 
 # Docksal environment for OpenY
 
 Open the project's folder and run 
+
 ```
 fin init
 ```
+
 to start the project.
 
 The webserver starts up, and the site will be installed automatically.
@@ -163,9 +164,10 @@ Administrator account is _admin_:_admin_.
 After you run the "fin init" and have your environment ready you need to do few things.
 
 - Create a fork of [http://github.com/ymcatwincities/openy](http://github.com/ymcatwincities/openy).
-- In your project go to `docroot/profiles/contrib/openy` and edit **.git/config file**. Replace repo URL to your newly created fork.
-- Then you can create a branch in your repo, push some code and create a pull request back to ymcatwincities/openy repo.
+- In your project go to `docroot/profiles/contrib/openy` and edit `.git/config` file. Replace repo URL to your newly created fork.
+- Then you can create a branch in your repo, push some code and create a pull request back to `ymcatwincities/openy` repo.
 
 # How to run behat tests?
 
-Then edit behat.local.yml and change base_url to "web" and wd_host to "http://browser:4444/wd/hub". Then you can run your behat tests with "./vendor/behat/behat/bin/behat".
+Edit `behat.local.yml` and set `base_url` to `web` and `wd_host` to `http://browser:4444/wd/hub`. 
+Then you can run your behat tests with `./vendor/behat/behat/bin/behat`.
