@@ -147,17 +147,39 @@ Open the URL printed at the end of the setup (e.g. `http://openy.docksal`) to se
 
 # Docksal environment for OpenY
 
-Open the project's folder and run 
+Open the project's folder and run one of the commands.
 
-```
+Administrator account is _admin_:_admin_.
+
+### Start the project
+
+```bash
 fin init
 ```
 
-to start the project.
 
-The webserver starts up, and the site will be installed automatically.
+The webserver starts up, and the site will be installed automatically with `drush si`.
 
-Administrator account is _admin_:_admin_.
+### Install site from UI
+```bash
+fin install_steps
+```
+
+The webserver starts up and for site will be provided base configuration. 
+After finish you need to open site in browser and continue installation from UI.
+This command is useful for testing OpenY install form.
+
+### Testing Upgrade path
+```bash
+fin upgrade_init
+```
+
+The webserver starts up and site will be installed from OpenY DB dump 
+that contain pre-installed previous OpenY version.
+Also will be executed all new updates.
+
+More info about upgrade path you can find here - [How to support upgrade path](https://github.com/ymcatwincities/openy/blob/8.x-2.x/docs/Development/Upgrade%20path.md)
+
 
 # How to develop?
 

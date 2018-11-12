@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-## Initialize Docksal powered Drupal 8 site from DB dump
+## Initialize Docksal powered Drupal 8 site for installation from UI
   ##
-  ## Usage: fin upgrade_init
+  ## Usage: fin install_steps
 
   # Abort if anything fails
   set -e
