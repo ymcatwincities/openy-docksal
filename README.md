@@ -1,4 +1,4 @@
-This is a Docksal-based for the [OpenY](https://github.com/ymcatwincities/openy) Drupal distribution.
+This is a Docksal-based for the [Open Y](https://github.com/ymcatwincities/openy) Drupal distribution.
 
 [Docksal](https://docksal.io/) is used as a local development environment.
 
@@ -132,7 +132,7 @@ A default project / experiment entry has been created.                          
 You can now include content into the sitemap by visiting the corresponding entity type edit pages (e.g. node type edit pages).Support  [status]
 for additional entity types and custom links can be added on the module's configuration pages.
 The XML sitemap has been regenerated for all languages.                                                                                [status]
-Congratulations, you installed OpenY!    
+Congratulations, you installed Open Y!    
 Clear caches.
 Cache rebuild complete.                                                                                                                [ok]
 Created three GoogleTagManager snippet files based on configuration.                                                                   [status]
@@ -143,9 +143,9 @@ sys     0m0.780s
  DONE!  Open http://openy.docksal in your browser to verify the setup.
 ```
 
-Open the URL printed at the end of the setup (e.g. `http://openy.docksal`) to see your local copy of the latest stable OpenY.
+Open the URL printed at the end of the setup (e.g. `http://openy.docksal`) to see your local copy of the latest stable Open Y.
 
-# Docksal environment for OpenY
+# Docksal environment for Open Y
 
 Open the project's folder and run one of the commands.
 
@@ -167,18 +167,18 @@ fin install_steps
 
 The webserver starts up and for site will be provided base configuration. 
 After finish you need to open site in browser and continue installation from UI.
-This command is useful for testing OpenY install form.
+This command is useful for testing Open Y install form.
 
 ### Testing Upgrade path
 ```bash
 fin upgrade_init
 ```
 
-The webserver starts up and site will be installed from OpenY DB dump 
-that contain pre-installed previous OpenY version.
-Also will be executed all new updates.
+The webserver starts up and the site will be installed from Open Y DB dump 
+that contain pre-installed previous Open Y version.
+After installation will be executed all new updates that were added in the latest Open Y versions.
 
-More info about upgrade path you can find here - [How to support upgrade path](https://github.com/ymcatwincities/openy/blob/8.x-2.x/docs/Development/Upgrade%20path.md)
+More information about the upgrade path you can find here - [How to support upgrade path](https://github.com/ymcatwincities/openy/blob/8.x-2.x/docs/Development/Upgrade%20path.md)
 
 
 # How to develop?

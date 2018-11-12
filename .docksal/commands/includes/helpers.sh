@@ -52,3 +52,17 @@ copy_settings_file()
     echo-yellow "${dest} already in place."
   fi
 }
+
+# Fix file/folder permissions
+# @param $1 site directory path (example - {DOCROOT_PATH}/sites/default)
+fix_permissions ()
+{
+  local SITE_DIR="$1"
+  echo-green "Making site directory writable..."
+  mkdir -p "${SITE_DIR}/files"
+  chmod 755 "$SITE_DIR"
+  chmod 777 "${SITE_DIR}/files"
+
+  mkdir -p "${SITE_DIR}/files/config/sync"
+  chmod 777 "${SITE_DIR}/files/config/sync"
+}
