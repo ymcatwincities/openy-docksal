@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+## Build Open Y project.
+##
+## See https://github.com/ymcatwincities/openy-project
+## Note: This command will remove all files in project, use with caution!
+##
+## Usage: fin build_project
+
+# Abort if anything fails
+set -e
+
+CURRENT_DIR="$(dirname "$0")"
+source "${CURRENT_DIR}/includes/helpers.sh"
+
+#-------------------------- Settings --------------------------------
+
+PROJECT_NAME="openy_project"
+COMPOSER_PROJECT="${PROJECT_ROOT}/${PROJECT_NAME}"
+DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT:-docroot}"
+OPENY_PATH="${DOCROOT_PATH}/profiles/contrib/openy"
+
+#-------------------------- END: Settings --------------------------------
+
+#-------------------------- Functions --------------------------------
+
+# Setup composer project.
+setup_project ()
+{
+  cd "$PROJECT_ROOT"
+  fin composer create-project "ymcatwincities/openy-project:$OPENY_PROJECT_VERSION" "$PROJECT_NAME" --no-interaction --no-dev
+  cd "$COMPOSER_PROJECT" && fin composer update
+
+  # Remove downloaded docksal directory.
+  rm -rf "${COMPOSER_PROJECT}/.docksal"
+  # Move all files from COMPOSER_PROJECT to root directory.
+  cd "$COMPOSER_PROJECT"
+  mv * .[^.]* ..
+  # Remove empty directory.
+  rm -rf "$COMPOSER_PROJECT"
+}
+
+# Cleanup project.
+cleanup ()
+{
+  cd "$PROJECT_ROOT"
+  # Remove all files and directories except listed.
+  ls -a | grep -v -e ".docksal" -e ".idea" -e "^.$" -e "^..$" | xargs rm -rf
+}
+
+# Init GIT repository in project.
+init_git_repo ()
+{
+  cd "$OPENY_PATH"
+  git init
+  git add --all >/dev/null
+  git commit -m "Initial commit" >/dev/null
+  git remote add openy "$GIT_REMOTE_OPENY"
+  if [ ! -z "$GIT_REMOTE_ORIGIN" ]; then
+    git remote add origin "$GIT_REMOTE_ORIGIN"
+  fi
+  git fetch openy >/dev/null
+  git checkout -b "openy/$OPENY_VERSION"
+}
+
+#-------------------------- END: Functions ---------------------------
+
+#-------------------------- Execution --------------------------------
+if [[ ${DOCKER_RUNNING} == "true" ]]; then
+  echo-green-bg " Step 1: Recreating services. "
+  fin reset -f
+else
+  echo-green-bg " Step 1: Creating services. "
+  fin up
+fi
+
+echo-green-bg " Step 2: Cleanup."
+time cleanup
+
+echo-green-bg " Step 3: Build project."
+time setup_project
+
+echo-green-bg " Step 4: Init git repo and add remote."
+time init_git_repo
+
+echo -en "${green_bg} DONE! ${NC} "
+echo "Run 'fin init' to install Open Y."
+
+#-------------------------- END: Execution ----------------------------------
