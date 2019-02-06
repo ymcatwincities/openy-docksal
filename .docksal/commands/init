@@ -40,7 +40,7 @@ site_install ()
     # We disable email sending here so site-install does not return an error
     fin drush si -y ${PROFILE_NAME} \
         install_configure_form.enable_update_status_module=NULL \
-	openy_terms_of_use.agree_openy_terms=1 \
+        openy_terms_of_use.agree_openy_terms=1 \
         --account-pass=admin \
         --db-url="mysql://${MYSQL_USER:-user}:${MYSQL_PASSWORD:-user}@db:3306/${MYSQL_DATABASE:-default}" \
         --root="${SERVER_DOCROOT_PATH}"
@@ -50,6 +50,13 @@ site_install ()
 
     mkdir -p "${DOCROOT_PATH}/sites/${SITE_DIRECTORY}/files"
     chmod 777 "${DOCROOT_PATH}/sites/${SITE_DIRECTORY}/files"
+}
+
+# Enable modules
+enable_modules ()
+{
+    cd $DOCROOT_PATH
+    fin exec "APP_ENV=dev drush en -y devel features_ui field_ui views_ui dblog"
 }
 
 #-------------------------- END: Functions --------------------------------
@@ -68,6 +75,9 @@ progress_bar
 
 echo-green-bg " Step 3: Installing site. "
 time site_install
+
+echo-green-bg " Step 4: Enabling modules. "
+time enable_modules
 
 echo -en "${green_bg} DONE! ${NC} "
 echo "Open http://${VIRTUAL_HOST} in your browser to verify the setup."
