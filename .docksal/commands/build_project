@@ -55,10 +55,10 @@ init_git_repo ()
   git init
   git add --all >/dev/null
   git commit -m "Initial commit" >/dev/null
-  git remote add openy "$GIT_REMOTE_OPENY"
-  if [ ! -z "$GIT_REMOTE_ORIGIN" ]; then
-    git remote rm origin
-    git remote add origin "$GIT_REMOTE_ORIGIN"
+  git remote rm origin
+  git remote add origin "$GIT_REMOTE_ORIGIN"
+  if [ ! -z "$GIT_REMOTE_UPSTREAM" ]; then
+    git remote add upstream "$GIT_REMOTE_UPSTREAM"
   fi
   git fetch openy >/dev/null
   git checkout -b "openy/$OPENY_VERSION"
