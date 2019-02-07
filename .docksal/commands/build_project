@@ -16,6 +16,7 @@ source "${CURRENT_DIR}/includes/helpers.sh"
 #-------------------------- Settings --------------------------------
 
 PROJECT_NAME="openy_project"
+IGNORE_REQUIRED="^.$ ^..$ .docksal"
 COMPOSER_PROJECT="${PROJECT_ROOT}/${PROJECT_NAME}"
 DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT:-docroot}"
 OPENY_PATH="${DOCROOT_PATH}/profiles/contrib/openy"
@@ -44,8 +45,24 @@ setup_project ()
 cleanup ()
 {
   cd "$PROJECT_ROOT"
-  # Remove all files and directories except listed.
-  ls -a | grep -v -e ".docksal" -e ".idea" -e "^.$" -e "^..$" | xargs rm -rf
+
+  # Build command based on settings.
+  IGNORE="$IGNORE_REQUIRED $IGNORE_CUSTOM"
+  CMD='ls -a | grep -v'
+  arr=(`echo ${IGNORE}`);
+
+  echo "Ignore ${#arr[*]} directories during cleanup:"
+  for ix in ${!arr[*]}
+  do
+    CMD="$CMD -e '${arr[$ix]}'"
+    printf "   %s\n" "- ${arr[$ix]}"
+  done
+
+  # Here we will get something like this:
+  # ls -a | grep -v -e ".docksal" -e ".idea" -e "^.$" -e "^..$" | xargs rm -rf
+  RM_CMD="$CMD | xargs rm -rf"
+  # Execute command.
+  eval $CMD
 }
 
 # Init GIT repository in project.
