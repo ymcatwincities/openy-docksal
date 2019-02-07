@@ -72,16 +72,15 @@ cleanup ()
 init_git_repo ()
 {
   cd "$OPENY_PATH"
-  git init
-  git add --all >/dev/null
-  git commit -m "Initial commit" >/dev/null
-  git remote rm origin
-  git remote add origin "$GIT_REMOTE_ORIGIN"
-  if [ ! -z "$GIT_REMOTE_UPSTREAM" ]; then
-    git remote add upstream "$GIT_REMOTE_UPSTREAM"
+  fin exec "rm -rf .git"
+  fin exec "git init"
+  fin exec "git add --all" >/dev/null
+  fin exec 'git commit -m "Initial commit"' >/dev/null
+  fin exec "git remote add origin $GIT_REMOTE_ORIGIN"
+  if [ -n "$GIT_REMOTE_UPSTREAM" ]; then
+    fin exec "git remote add upstream $GIT_REMOTE_UPSTREAM"
   fi
-  git fetch openy >/dev/null
-  git checkout -b "openy/$OPENY_VERSION"
+  fin exec "git checkout -b origin/$OPENY_VERSION"
 }
 
 #-------------------------- END: Functions ---------------------------
