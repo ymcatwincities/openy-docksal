@@ -61,8 +61,11 @@ cleanup ()
   # Here we will get something like this:
   # ls -a | grep -v -e ".docksal" -e ".idea" -e "^.$" -e "^..$" | xargs rm -rf
   RM_CMD="$CMD | xargs rm -rf"
+  if [ -d "$DOCROOT_PATH" ]; then
+    fin exec "chmod 777 -R $DOCROOT_PATH"
+  fi
   # Execute command.
-  eval $CMD
+  fin exec "$RM_CMD"
 }
 
 # Init GIT repository in project.
