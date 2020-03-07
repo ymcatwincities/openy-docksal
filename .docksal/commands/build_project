@@ -61,8 +61,8 @@ cleanup ()
   # Here we will get something like this:
   # ls -a | grep -v -e ".docksal" -e ".idea" -e "^.$" -e "^..$" | xargs rm -rf
   RM_CMD="$CMD | xargs rm -rf"
-  if [ -d "$DOCROOT_PATH" ]; then
-    fin exec "chmod 777 -R $DOCROOT_PATH"
+  if [[ -d "$DOCROOT_PATH" ]]; then
+    fin exec "chmod 777 -R $DOCROOT"
   fi
   # Execute command.
   fin exec "$RM_CMD"
@@ -80,7 +80,8 @@ init_git_repo ()
   if [ -n "$GIT_REMOTE_UPSTREAM" ]; then
     fin exec "git remote add upstream $GIT_REMOTE_UPSTREAM"
   fi
-  fin exec "git checkout -b origin/$OPENY_VERSION"
+  fin exec "git fetch origin"
+  fin exec "git checkout $OPENY_VERSION"
 }
 
 #-------------------------- END: Functions ---------------------------
