@@ -38,12 +38,26 @@ Also you can set here corresponding versions of openy-project and openy.
 If you work on already existing project and want to save any folder in project root directory - add folder name
 to `IGNORE_CUSTOM`. Directories names should be separated by spaces.
 
+If you want to use your fork as an origin remote and the main repository as an 
+upstream remote, add the following variables to the `docksal-local.env` file 
+as follows:
+```yaml
+GIT_REMOTE_UPSTREAM='git@github.com:ymcatwincities/openy.git'
+GIT_REMOTE_ORIGIN='git@github.com:USER/openy.git'
+```
+In this case, after project install git will already track the repositories 
+you specified as `origin` and `upstream` remotes
+
 #### Build Open Y project
 Run this command inside your project directory:
 ```bash
 fin build_project
 ```
 As result you will get full Open Y installation in your file system.
+
+The "Killed" message during command run usually means that you need to increase memory limits in your Docksal.
+For macOS or Windows overall memory volume available for Docker is limited by the virtual machine or Docker Desktop 
+settings.
 
 #### Install Open Y site
 
