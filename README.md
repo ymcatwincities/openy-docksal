@@ -17,7 +17,7 @@ Follow these steps to get fully prepared project.
 curl -fsSL https://get.docksal.io | bash
 ```
 
-#### Clone OpenY dokcsal project
+#### Clone OpenY docksal project
 ```bash
 git clone git@github.com:ymcatwincities/openy-docksal.git
 ```
