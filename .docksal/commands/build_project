@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+## Build Open Y project.
+##
+## See https://github.com/ymcatwincities/openy-project
+## Note: This command will remove all files in project, use with caution!
+##
+## Usage: fin build_project
+
+# Abort if anything fails
+set -e
+
+CURRENT_DIR="$(dirname "$0")"
+source "${CURRENT_DIR}/includes/helpers.sh"
+
+#-------------------------- Settings --------------------------------
+
+PROJECT_NAME="openy_project"
+IGNORE_REQUIRED="^.$ ^..$ .docksal"
+COMPOSER_PROJECT="${PROJECT_ROOT}/${PROJECT_NAME}"
+DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT:-docroot}"
+OPENY_PATH="${DOCROOT_PATH}/profiles/contrib/openy"
+
+#-------------------------- END: Settings --------------------------------
+
+#-------------------------- Functions --------------------------------
+
+# Setup composer project.
+setup_project ()
+{
+  cd "$PROJECT_ROOT"
+  fin composer create-project "ymcatwincities/openy-project:$OPENY_PROJECT_VERSION" "$PROJECT_NAME" --no-interaction --no-dev
+  cd "$COMPOSER_PROJECT" && fin composer update
+
+  # Remove downloaded docksal directory.
+  rm -rf "${COMPOSER_PROJECT}/.docksal"
+  # Move all files from COMPOSER_PROJECT to root directory.
+  cd "$COMPOSER_PROJECT"
+  mv * .[^.]* ..
+  # Remove empty directory.
+  rm -rf "$COMPOSER_PROJECT"
+}
+
+# Cleanup project.
+cleanup ()
+{
+  cd "$PROJECT_ROOT"
+
+  # Build command based on settings.
+  IGNORE="$IGNORE_REQUIRED $IGNORE_CUSTOM"
+  CMD='ls -a | grep -v'
+  arr=(`echo ${IGNORE}`);
+
+  echo "Ignore ${#arr[*]} directories during cleanup:"
+  for ix in ${!arr[*]}
+  do
+    CMD="$CMD -e '${arr[$ix]}'"
+    printf "   %s\n" "- ${arr[$ix]}"
+  done
+
+  # Here we will get something like this:
+  # ls -a | grep -v -e ".docksal" -e ".idea" -e "^.$" -e "^..$" | xargs rm -rf
+  RM_CMD="$CMD | xargs rm -rf"
+  if [[ -d "$DOCROOT_PATH" ]]; then
+    fin exec "chmod 777 -R $DOCROOT"
+  fi
+  # Execute command.
+  fin exec "$RM_CMD"
+}
+
+# Init GIT repository in project.
+init_git_repo ()
+{
+  cd "$OPENY_PATH"
+  fin exec "rm -rf .git"
+  fin exec "git init"
+  fin exec "git add --all" >/dev/null
+  fin exec 'git commit -m "Initial commit"' >/dev/null
+  fin exec "git remote add origin $GIT_REMOTE_ORIGIN"
+  if [ -n "$GIT_REMOTE_UPSTREAM" ]; then
+    fin exec "git remote add upstream $GIT_REMOTE_UPSTREAM"
+  fi
+  fin exec "git fetch origin"
+  fin exec "git checkout $OPENY_VERSION"
+}
+
+#-------------------------- END: Functions ---------------------------
+
+#-------------------------- Execution --------------------------------
+if [[ ${DOCKER_RUNNING} == "true" ]]; then
+  echo-green-bg " Step 1: Recreating services. "
+  fin reset -f
+else
+  echo-green-bg " Step 1: Creating services. "
+  fin up
+fi
+
+echo-green-bg " Step 2: Cleanup."
+time cleanup
+
+echo-green-bg " Step 3: Build project."
+time setup_project
+
+echo-green-bg " Step 4: Init git repo and add remote."
+time init_git_repo
+
+echo -en "${green_bg} DONE! ${NC} "
+echo "Run 'fin init' to install Open Y."
+
+#-------------------------- END: Execution ----------------------------------
