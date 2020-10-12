@@ -19,27 +19,11 @@ PROJECT_NAME="openy_project"
 IGNORE_REQUIRED="^.$ ^..$ .docksal"
 COMPOSER_PROJECT="${PROJECT_ROOT}/${PROJECT_NAME}"
 DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT:-docroot}"
-OPENY_PATH="${DOCROOT_PATH}/profiles/contrib/openy"
+OPENY_PATH="${DOCROOT:-docroot}/profiles/contrib/openy"
 
 #-------------------------- END: Settings --------------------------------
 
 #-------------------------- Functions --------------------------------
-
-# Setup composer project.
-setup_project ()
-{
-  cd "$PROJECT_ROOT"
-  fin composer create-project "ymcatwincities/openy-project:$OPENY_PROJECT_VERSION" "$PROJECT_NAME" --no-interaction --no-dev
-  cd "$COMPOSER_PROJECT" && fin composer update
-
-  # Remove downloaded docksal directory.
-  rm -rf "${COMPOSER_PROJECT}/.docksal"
-  # Move all files from COMPOSER_PROJECT to root directory.
-  cd "$COMPOSER_PROJECT"
-  mv * .[^.]* ..
-  # Remove empty directory.
-  rm -rf "$COMPOSER_PROJECT"
-}
 
 # Cleanup project.
 cleanup ()
@@ -68,20 +52,42 @@ cleanup ()
   fin exec "$RM_CMD"
 }
 
+# Checkout composer project.
+checkout_composer_project ()
+{
+  cd "$PROJECT_ROOT"
+  fin exec "git clone git@github.com:ymcatwincities/openy-project.git $PROJECT_NAME"
+  cd "$COMPOSER_PROJECT"
+  fin exec git checkout $OPENY_PROJECT_VERSION
+  rm -rf ".git"
+}
+
 # Init GIT repository in project.
 init_git_repo ()
 {
-  cd "$OPENY_PATH"
-  fin exec "rm -rf .git"
-  fin exec "git init"
-  fin exec "git add --all" >/dev/null
-  fin exec 'git commit -m "Initial commit"' >/dev/null
-  fin exec "git remote add origin $GIT_REMOTE_ORIGIN"
+  cd "$COMPOSER_PROJECT"
+  mkdir -p "$OPENY_PATH" && cd "$OPENY_PATH"
+  fin exec "git clone $GIT_REMOTE_ORIGIN ."
   if [ -n "$GIT_REMOTE_UPSTREAM" ]; then
     fin exec "git remote add upstream $GIT_REMOTE_UPSTREAM"
   fi
-  fin exec "git fetch origin"
   fin exec "git checkout $OPENY_VERSION"
+}
+
+# Install composer project.
+install_project ()
+{
+  cd "$COMPOSER_PROJECT"
+  fin exec "composer config repositories.openy_dev path $OPENY_PATH"
+  fin composer update
+
+  # Remove downloaded docksal directory.
+  rm -rf ".docksal"
+
+  # Move all files from COMPOSER_PROJECT to root directory.
+  mv * .[^.]* ..
+  # Remove empty directory.
+  rm -rf "$COMPOSER_PROJECT"
 }
 
 #-------------------------- END: Functions ---------------------------
@@ -98,11 +104,14 @@ fi
 echo-green-bg " Step 2: Cleanup."
 time cleanup
 
-echo-green-bg " Step 3: Build project."
-time setup_project
+echo-green-bg " Step 3: Checkout composer project."
+time checkout_composer_project
 
-echo-green-bg " Step 4: Init git repo and add remote."
+echo-green-bg " Step 4: Init git repo and add upstream remote."
 time init_git_repo
+
+echo-green-bg " Step 5: Install project using composer and attach openy."
+time install_project
 
 echo -en "${green_bg} DONE! ${NC} "
 echo "Run 'fin init' to install Open Y."
