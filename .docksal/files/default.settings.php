@@ -794,4 +794,5 @@ $databases['default']['default'] = array (
   'driver' => 'mysql',
 );
 $settings['install_profile'] = 'openy';
-$config_directories['sync'] = 'sites/default/files/config/sync';
+$settings['config_sync_directory'] = 'sites/default/files/config/sync';
+$settings['class_loader_auto_detect'] = FALSE;
