@@ -26,8 +26,8 @@ git clone git@github.com:ymcatwincities/openy-docksal.git
 
 - Create `docksal-local.env` file inside `.docksal` directory with content:
 ```yaml
-OPENY_PROJECT_VERSION='8.2.x'
-OPENY_VERSION='8.x-2.x'
+OPENY_PROJECT_VERSION='9.2.x'
+OPENY_VERSION='8.x-9.x'
 GIT_REMOTE_UPSTREAM='git@github.com:USER/openy.git'
 IGNORE_CUSTOM='.idea'
 ```
@@ -35,12 +35,12 @@ IGNORE_CUSTOM='.idea'
 `ymcatwincities/openy-project` to be used as a composer project. In the most 
 cases you'll need:
 
-  - `8.2.x` for a last stable openy release.
-  - `8.2.x-development` for a latest development openy.
+  - `9.2.x` for a last stable openy release.
+  - `9.2.x-development` for a latest development openy.
   
 - Use `OPENY_VERSION` to specify the branch of the `ymcatwincities/openy` will 
 be checkout automatically. Take in mind, the openy version corresponds the one, 
-required in a root `composer.json`. Use `8.x-2.x` to start the development from 
+required in a root `composer.json`. Use `9.x-2.x` to start the development from 
 the latest openy progress.
 
 - Replace `USER` by your user name from github or remove `GIT_REMOTE_UPSTREAM` 
