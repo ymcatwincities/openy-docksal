@@ -27,7 +27,7 @@ git clone git@github.com:ymcatwincities/openy-docksal.git
 - Create `docksal-local.env` file inside `.docksal` directory with content:
 ```yaml
 OPENY_PROJECT_VERSION='9.2.x'
-OPENY_VERSION='8.x-9.x'
+OPENY_VERSION='9.x-2.x'
 GIT_REMOTE_UPSTREAM='git@github.com:USER/openy.git'
 IGNORE_CUSTOM='.idea'
 ```
