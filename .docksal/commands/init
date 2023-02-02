@@ -63,10 +63,11 @@ enable_modules ()
 
 if [[ ${DOCKER_RUNNING} == "true" ]]; then
 	echo-green-bg " Step 1: Recreating services. "
-	fin reset -f
+	fin remove -f
+	fin mutagen start
 else
 	echo-green-bg " Step 1: Creating services. "
-	fin up
+	fin mutagen restart
 fi
 
 echo-green-bg " Step 2: Waiting ${MYSQL_STARTUP_DELAY}s for MySQL to start. "
