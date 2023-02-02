@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-## Build Open Y project.
+## Build Y USA Open Y project.
 ##
-## See https://github.com/ymcatwincities/openy-project
+## See https://github.com/YCloudYUSA/yusaopeny-project
 ## Note: This command will remove all files in project, use with caution!
 ##
 ## Usage: fin build_project
@@ -15,11 +15,11 @@ source "${CURRENT_DIR}/includes/helpers.sh"
 
 #-------------------------- Settings --------------------------------
 
-PROJECT_NAME="openy_project"
+PROJECT_NAME="yusaopeny"
 IGNORE_REQUIRED="^.$ ^..$ .docksal"
 COMPOSER_PROJECT="${PROJECT_ROOT}/${PROJECT_NAME}"
 DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT:-docroot}"
-OPENY_PATH="${DOCROOT:-docroot}/profiles/contrib/openy"
+YUSAOPENY_PATH="${DOCROOT:-docroot}/profiles/contrib/yusaopeny"
 
 #-------------------------- END: Settings --------------------------------
 
@@ -56,9 +56,9 @@ cleanup ()
 checkout_composer_project ()
 {
   cd "$PROJECT_ROOT"
-  fin exec "git clone git@github.com:ymcatwincities/openy-project.git $PROJECT_NAME"
+  fin exec "git clone git@github.com:YCloudYUSA/yusaopeny-project.git $PROJECT_NAME"
   cd "$COMPOSER_PROJECT"
-  fin exec git checkout $OPENY_PROJECT_VERSION
+  fin exec git checkout $YUSAOPENY_PROJECT_VERSION
   rm -rf ".git"
 }
 
@@ -66,19 +66,19 @@ checkout_composer_project ()
 init_git_repo ()
 {
   cd "$COMPOSER_PROJECT"
-  mkdir -p "$OPENY_PATH" && cd "$OPENY_PATH"
+  mkdir -p "$YUSAOPENY_PATH" && cd "$YUSAOPENY_PATH"
   fin exec "git clone $GIT_REMOTE_ORIGIN ."
   if [ -n "$GIT_REMOTE_UPSTREAM" ]; then
     fin exec "git remote add upstream $GIT_REMOTE_UPSTREAM"
   fi
-  fin exec "git checkout $OPENY_VERSION"
+  fin exec "git checkout $YUSAOPENY_VERSION"
 }
 
 # Install composer project.
 install_project ()
 {
   cd "$COMPOSER_PROJECT"
-  fin exec "composer config repositories.openy_dev path $OPENY_PATH"
+  fin exec "composer config repositories.openy_dev path $YUSAOPENY_PATH"
   fin composer update
 
   # Remove downloaded docksal directory.
