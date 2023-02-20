@@ -56,18 +56,17 @@ site_install ()
 enable_modules ()
 {
     cd $DOCROOT_PATH
-    fin exec "APP_ENV=dev drush en -y devel features_ui field_ui views_ui dblog"
+    fin exec "APP_ENV=dev drush en -y features_ui field_ui views_ui dblog"
 }
 
 #-------------------------- END: Functions --------------------------------
 
 if [[ ${DOCKER_RUNNING} == "true" ]]; then
 	echo-green-bg " Step 1: Recreating services. "
-	fin remove -f
-	fin mutagen start
+	fin reset -f
 else
 	echo-green-bg " Step 1: Creating services. "
-	fin mutagen restart
+	fin up
 fi
 
 echo-green-bg " Step 2: Waiting ${MYSQL_STARTUP_DELAY}s for MySQL to start. "

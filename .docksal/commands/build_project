@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## Build Y USA Open Y project.
+## Build Y USA Open YMCA project.
 ##
 ## See https://github.com/YCloudYUSA/yusaopeny-project
 ## Note: This command will remove all files in project, use with caution!
@@ -15,7 +15,7 @@ source "${CURRENT_DIR}/includes/helpers.sh"
 
 #-------------------------- Settings --------------------------------
 
-PROJECT_NAME="yusaopeny"
+PROJECT_NAME="yusaopeny-project"
 IGNORE_REQUIRED="^.$ ^..$ .docksal"
 COMPOSER_PROJECT="${PROJECT_ROOT}/${PROJECT_NAME}"
 DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT:-docroot}"
@@ -110,10 +110,10 @@ time checkout_composer_project
 echo-green-bg " Step 4: Init git repo and add upstream remote."
 time init_git_repo
 
-echo-green-bg " Step 5: Install project using composer and attach openy."
+echo-green-bg " Step 5: Install project using composer and attach yusaopeny."
 time install_project
 
 echo -en "${green_bg} DONE! ${NC} "
-echo "Run 'fin init' to install Open Y."
+echo "Run 'fin init' to install YMCA’s Website Service."
 
 #-------------------------- END: Execution ----------------------------------
