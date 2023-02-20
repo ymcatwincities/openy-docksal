@@ -56,7 +56,7 @@ site_install ()
 enable_modules ()
 {
     cd $DOCROOT_PATH
-    fin exec "APP_ENV=dev drush en -y devel features_ui field_ui views_ui dblog"
+    fin exec "APP_ENV=dev drush en -y features_ui field_ui views_ui dblog"
 }
 
 #-------------------------- END: Functions --------------------------------
